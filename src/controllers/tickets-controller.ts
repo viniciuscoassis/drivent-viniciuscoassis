@@ -15,11 +15,9 @@ async function getTickets(req: AuthenticatedRequest, res: Response) {
 
   try {
     const enrollCheck = await enrollmentsService.getEnrollmentByUserId(userId);
-   
     if (!enrollCheck) return res.sendStatus(httpStatus.NOT_FOUND);
 
     const ticketFromUser = await ticketService.findTicketFromUser(enrollCheck.id);
-    console.log(ticketFromUser);
     if (!ticketFromUser) return res.sendStatus(httpStatus.NOT_FOUND);
 
     const typeId = ticketFromUser.ticketTypeId;
@@ -36,4 +34,28 @@ async function getTickets(req: AuthenticatedRequest, res: Response) {
   }
 }
 
-export { getTicketTypes, getTickets };
+async function postTicket(req: AuthenticatedRequest, res: Response) {
+  const typeId = req.body.ticketTypeId as number;
+  const userId = req.userId;
+
+  try {
+    if (!typeId) return res.sendStatus(httpStatus.BAD_REQUEST);
+    const enrollCheck = await enrollmentsService.getEnrollmentByUserId(userId);
+    if (!enrollCheck) return res.sendStatus(httpStatus.NOT_FOUND);
+
+    const newTicket = await ticketService.insertNewTicket({ ticketTypeId: typeId, enrollmentId: enrollCheck.id, status: "RESERVED", updatedAt: new Date() });
+
+    const ticketType = await ticketTypeService.findTicketTypeFromId(newTicket.ticketTypeId);
+
+    const returnedTicket = {
+      ...newTicket,
+      TicketType: ticketType,
+    };
+ 
+    return res.status(httpStatus.CREATED).send(returnedTicket);
+  } catch (error) {
+    return res.sendStatus(httpStatus.BAD_REQUEST);
+  }
+}
+
+export { getTicketTypes, getTickets, postTicket };

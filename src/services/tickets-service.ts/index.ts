@@ -1,4 +1,4 @@
-import { ticketTypeRepository, ticketsRepository } from "@/repositories/tickets-repository.ts";
+import { ticketTypeRepository, ticketsRepository, createTicket } from "@/repositories/tickets-repository.ts";
 
 async function findAllTicketTypes() {
   const ticketTypes = await ticketTypeRepository.findMany();
@@ -14,8 +14,20 @@ async function findTicketTypeFromId(typeId: number) {
   const ticketType = await ticketTypeRepository.findUnique(typeId);
   return ticketType;
 }
+
+async function insertNewTicket(body: createTicket) {
+  const newTicket = await ticketsRepository.createNewTicket(body);
+  return newTicket;
+}
+
+async function getTicketById(id: number) {
+  const ticket = await ticketsRepository.findUniqueTicket(id);
+  return ticket;
+}
+
 const ticketService ={ 
-  findTicketFromUser
+  findTicketFromUser, insertNewTicket, getTicketById
+  
 };
 const ticketTypeService = {
   findAllTicketTypes, findTicketTypeFromId
