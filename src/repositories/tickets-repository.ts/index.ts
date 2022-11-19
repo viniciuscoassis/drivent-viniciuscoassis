@@ -23,9 +23,9 @@ async function createNewTicket(body: createTicket) {
   });
 }
 
-async function findUniqueTicket(id: id) {
+async function findUniqueTicket(id: number) {
   return prisma.ticket.findUnique({
-    where: { id: id }
+    where: { id }
   });
 }
 

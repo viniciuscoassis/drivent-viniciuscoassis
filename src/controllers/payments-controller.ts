@@ -1,5 +1,6 @@
 import { AuthenticatedRequest } from "@/middlewares";
 import enrollmentsService from "@/services/enrollments-service";
+import paymentsService from "@/services/payments-service";
 import { ticketService } from "@/services/tickets-service.ts";
 import { Response } from "express";
 import httpStatus from "http-status";
@@ -15,6 +16,9 @@ async function getPaymentByTicket(req: AuthenticatedRequest, res: Response) {
   if(!enrollment) return res.sendStatus(httpStatus.BAD_REQUEST);
 
   if(checkTicket.enrollmentId != enrollment.id) return res.sendStatus(httpStatus.UNAUTHORIZED);
+  const payment = await paymentsService.findPaymentWithTicket(Number(ticketId));
+
+  return res.status(httpStatus.OK).send(payment);
 }
 
 export { getPaymentByTicket };
