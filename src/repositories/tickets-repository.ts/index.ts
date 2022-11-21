@@ -23,6 +23,15 @@ async function createNewTicket(body: createTicket) {
   });
 }
 
+async function updateStatusToPaid(id: number) {
+  return prisma.ticket.update({
+    where: { id },
+    data: {
+      status: "PAID"
+    }
+  });
+}
+
 async function findUniqueTicket(id: number) {
   return prisma.ticket.findUnique({
     where: { id }
@@ -36,6 +45,6 @@ const ticketTypeRepository = {
 };
 
 const ticketsRepository = {
-  findFromUserId, createNewTicket, findUniqueTicket
+  findFromUserId, createNewTicket, findUniqueTicket, updateStatusToPaid
 };
 export { ticketsRepository, ticketTypeRepository };

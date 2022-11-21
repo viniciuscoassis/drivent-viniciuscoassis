@@ -25,8 +25,12 @@ async function getTicketById(id: number) {
   return ticket;
 }
 
+async function updateStatusToPaid(id: number) {
+  await ticketsRepository.updateStatusToPaid(id);
+}
+
 const ticketService ={ 
-  findTicketFromUser, insertNewTicket, getTicketById
+  findTicketFromUser, insertNewTicket, getTicketById, updateStatusToPaid
   
 };
 const ticketTypeService = {
